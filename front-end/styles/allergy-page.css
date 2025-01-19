@@ -63,6 +63,7 @@ body {
     border-radius: 50%;
     font-size: 1.2rem;
     margin-right: 10px;
+    
   }
   
   .allergy-text {
@@ -71,6 +72,25 @@ body {
     text-align: center;
   }
   
+  .celiac:hover::after {
+    content: "Celiac disease is an autoimmune disorder triggered by the consumption of gluten, a protein found in wheat, barley, and rye. ";
+    position: absolute;
+    top: 10%;
+    right: 90%;
+    background-color: #6b8f71;
+    color: #fff;
+    padding: 50px 30px;
+    border-radius: 5px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    opacity: 1;
+    visibility: visible;
+    text-align: center;
+    transform: translate(-70%, -50%);
+    
+  }
+
   .arrow {
     font-size: 1.5rem;
   }

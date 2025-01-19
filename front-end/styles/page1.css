@@ -5,7 +5,10 @@ body {
     color: rgb(246, 246, 233); 
     background-image: url('icons/background.png');
     background-size: cover;
-
+    display: flex; /* Add this line */
+    justify-content: center; /* Add this line */
+    align-items: center; /* Add this line */
+    min-height: 100vh; /* Ensure the body takes up the full viewport height */
 }
 
 .container {
@@ -116,4 +119,32 @@ header h1 {
     font-weight: bold;
     font-size: 16px;
     cursor: pointer;
+}
+
+.info-icon:hover::after {
+    position: absolute;
+    top: 100%; /* Position tooltip below the icon */
+    left: 50%;
+    transform: translateX(-50%); /* Center tooltip horizontally */
+    background-color: #333;
+    color: #fff;
+    padding: 30px 50px;
+    border-radius: 5px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s; /* Add transition for smooth appearance */
+    opacity: 1;
+    visibility: visible;
+    text-align: center; /* Add this line */ 
+    white-space: wrap; /* Add this line */ 
+    max-width: 100px; /* Add this line */ 
+    
+  }
+  
+.allergy:hover::after {
+    content: "An allergy happens when the immune system overreacts to harmless substances, producing antibodies that trigger an allergic reaction.";
+}
+
+.illness:hover::after {
+    content: ""
 }
