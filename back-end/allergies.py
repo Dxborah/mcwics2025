@@ -26,7 +26,7 @@ def main_allergy(allergies):
 
 def avoid_meals(main_ingredients_avoid):
     filter_url = "https://www.themealdb.com/api/json/v1/1/filter.php?i="
-    avoiding_meals = set()  
+    avoiding_meals = set()
     
     for ingredient in main_ingredients_avoid:
         main_url = filter_url + ingredient
@@ -45,7 +45,6 @@ def get_all_meals():
     
     for letter in letters:
         response = requests.get(search_url + letter).json()
-    
         if response and response['meals']:
             meals = [meal['strMeal'] for meal in response['meals']]
             all_meals.extend(meals)
@@ -114,10 +113,10 @@ def only_dessert(filtered_meals):
             random_meals = filtered_meals
         return random_meals
 
-def get_meal_ids(random_meals):
+def get_meal_ids(meal_names):
     """Fetch the meal IDs for given meal names."""
     meal_ids = []
-    for meal_name in random_meals:
+    for meal_name in meal_names:
         try:
             search_url = f"https://www.themealdb.com/api/json/v1/1/search.php?s={meal_name}"
             response = requests.get(search_url).json()
@@ -127,27 +126,31 @@ def get_meal_ids(random_meals):
             print(f"Error fetching meal ID for {meal_name}: {e}")
     return meal_ids
 
-def get_recipe(meal_id):
-    recipe_url = f"https://www.themealdb.com/api/json/v1/1/lookup.php?i={meal_id}"
-    try:
-        response = requests.get(recipe_url)
-        if response.status_code == 200:
-            meal = response.json()["meals"][0]
-            print("\nRecipe Details:")
-            print(f"- Name: {meal['strMeal']}")
-            print(f"- Category: {meal['strCategory']}")
-            print(f"- Area: {meal['strArea']}")
-            print(f"- Instructions:\n{meal['strInstructions']}")
-            print(f"- Ingredients:")
-            for i in range(1, 21):  
-                ingredient = meal.get(f"strIngredient{i}")
-                measure = meal.get(f"strMeasure{i}")
-                if ingredient and ingredient.strip():
-                    print(f"  - {ingredient} ({measure.strip() if measure else 'to taste'})")
-        else:
-            print(f"Failed to fetch the recipe. Status Code: {response.status_code}")
-    except Exception as e:
-        print(f"An error occurred while fetching the recipe: {e}")
+def get_recipe(meals_id):
+    """Fetch and display the recipe for a specific meal ID."""
+    for meal_id in meals_id:
+        recipe_url = f"https://www.themealdb.com/api/json/v1/1/lookup.php?i={meal_id}"
+        try:
+            response = requests.get(recipe_url)
+            if response.status_code == 200:
+                meal = response.json()["meals"][0]
+                print("\nRecipe Details:")
+                print(f"- Name: {meal['strMeal']}")
+                print(f"- Category: {meal['strCategory']}")
+                print(f"- Area: {meal['strArea']}")
+                print(f"- Instructions:\n{meal['strInstructions']}")
+                print(f"- Ingredients:")
+            
+            
+                for i in range(1, 21):  
+                    ingredient = meal.get(f"strIngredient{i}")
+                    measure = meal.get(f"strMeasure{i}")
+                    if ingredient and ingredient.strip():
+                        print(f"  - {ingredient} ({measure.strip() if measure else 'to taste'})")
+            else:
+                print(f"Failed to fetch the recipe. Status Code: {response.status_code}")
+        except Exception as e:
+            print(f"An error occurred while fetching the recipe: {e}")
 
 app = FastAPI()
 
@@ -155,7 +158,7 @@ class AllergyType(BaseModel):
     allergy: str
 
 @app.post("/filter-meals/")
-def filter_meals_endpoint(request: AllergyType):
+def filter_meals_allergies(request: AllergyType):
     allergy = request.allergy
     main_ingredients_avoid = main_allergy(allergy)
     meals_avoid = avoid_meals(main_ingredients_avoid)
@@ -164,21 +167,19 @@ def filter_meals_endpoint(request: AllergyType):
     filter_no_dessert = remove_dessert(filter_meal)
 
     breakfast = breakfast_meals(filter_no_dessert)
+    lunch_and_dinner = lunch_and_dinner_meals(filter_no_dessert)
+    desserts = only_dessert(filter_meal)
+
+    dessert_ids = get_meal_ids(desserts)
+    lunch_and_dinner_ids = get_meal_ids(lunch_and_dinner)
     breakfast_ids = get_meal_ids(breakfast)
 
-    lunch_and_dinner = lunch_and_dinner_meals(filter_no_dessert)
-    lunch_and_dinner_ids = get_meal_ids(lunch_and_dinner)
-
-    desserts = only_dessert(filter_meal)
-    dessert_ids = get_meal_ids(desserts)
-
-    breakfast_recipes = [get_recipe(meal_id) for meal_id in breakfast_ids]
-    lunch_and_dinner_recipes = [get_recipe(meal_id) for meal_id in lunch_and_dinner_ids]
-    dessert_recipes = [get_recipe(meal_id) for meal_id in dessert_ids]
+    breakfast_recipes = get_recipe(breakfast_ids)
+    lunch_and_dinner_recipes = get_recipe(lunch_and_dinner_ids)
+    dessert_recipes = get_recipe(dessert_ids)
 
     return {
         "breakfast_recipes": breakfast_recipes,
         "lunch_and_dinner_recipes": lunch_and_dinner_recipes,
         "dessert_recipes": dessert_recipes,
     }
-
