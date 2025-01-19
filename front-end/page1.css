@@ -11,7 +11,6 @@ body {
 .container {
     width: 1200px;
     height: 700px;
-    margin: 0 auto;
     padding: 20px;
     text-align: center;
 }
@@ -71,8 +70,8 @@ header h1 {
 
 /* Light and Dark Card Variants */
 .card.light {
-    background-color: #f2f2e9; /* Light beige background */
-    color: #6b8f71; /* Dark green text */
+    background-color: #f2f2e9;
+    color: #6b8f71;
 }
 
 .card.light .info-icon {
@@ -105,16 +104,16 @@ header h1 {
 
 /* Info Icon */
 .info-icon {
-    position: absolute; /* Allows precise positioning inside its container */
-    top: 10px; /* Adjust the distance from the top */
-    right: 10px; /* Adjust the distance from the right */
+    position: absolute; 
+    top: 10px;
+    right: 10px; 
     display: inline-block; 
-    width: 30px; /* Adjust size as needed */
+    width: 30px; 
     height: 30px;
-    line-height: 30px; /* Centers the "?" vertically */
-    text-align: center; /* Centers the "?" horizontally */
-    border-radius: 50%; /* Makes the icon circular */
+    line-height: 30px; 
+    text-align: center; 
+    border-radius: 50%;
     font-weight: bold;
     font-size: 16px;
-    cursor: pointer; /* Optional: Show a pointer cursor */
+    cursor: pointer;
 }
