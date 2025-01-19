@@ -91,8 +91,8 @@ def lunch_and_dinner_meals(filtered_meals):
         breakfast_meals = [meal['strMeal'] for meal in response['meals']]
         filtered_meals = [meal for meal in filtered_meals if meal not in breakfast_meals]
         
-        if len(filtered_meals) >= 6:
-            random_meals = random.sample(filtered_meals, 6)
+        if len(filtered_meals) >= 3:
+            random_meals = random.sample(filtered_meals, 3)
         else:
             random_meals = filtered_meals
         return random_meals
@@ -128,35 +128,29 @@ def get_meal_ids(meal_names):
 
 def get_recipe(meals_id):
     """Fetch and display the recipe for a specific meal ID."""
+    recipes = []
     for meal_id in meals_id:
         recipe_url = f"https://www.themealdb.com/api/json/v1/1/lookup.php?i={meal_id}"
         try:
             response = requests.get(recipe_url)
             if response.status_code == 200:
                 meal = response.json()["meals"][0]
-                print("\nRecipe Details:")
-                print(f"- Name: {meal['strMeal']}")
-                print(f"- Category: {meal['strCategory']}")
-                print(f"- Area: {meal['strArea']}")
-                print(f"- Instructions:\n{meal['strInstructions']}")
-                print(f"- Ingredients:")
-            
-            
-                for i in range(1, 21):  
-                    ingredient = meal.get(f"strIngredient{i}")
-                    measure = meal.get(f"strMeasure{i}")
-                    if ingredient and ingredient.strip():
-                        print(f"  - {ingredient} ({measure.strip() if measure else 'to taste'})")
+                recipes.append({
+                    "name": meal['strMeal'],
+                    "instructions": meal['strInstructions']
+                })
             else:
                 print(f"Failed to fetch the recipe. Status Code: {response.status_code}")
         except Exception as e:
             print(f"An error occurred while fetching the recipe: {e}")
+    return recipes
 
 app = FastAPI()
 
 class AllergyType(BaseModel):
     allergy: str
 
+request: AllergyType
 @app.post("/filter-meals/")
 def filter_meals_allergies(request: AllergyType):
     allergy = request.allergy
@@ -178,8 +172,14 @@ def filter_meals_allergies(request: AllergyType):
     lunch_and_dinner_recipes = get_recipe(lunch_and_dinner_ids)
     dessert_recipes = get_recipe(dessert_ids)
 
-    return {
-        "breakfast_recipes": breakfast_recipes,
-        "lunch_and_dinner_recipes": lunch_and_dinner_recipes,
-        "dessert_recipes": dessert_recipes,
-    }
+    for category, recipes in {
+        "Breakfast": breakfast_recipes,
+        "Lunch/Dinner": lunch_and_dinner_recipes,
+        "Desserts": dessert_recipes,
+    }.items():
+        print(f"\n{category}:")
+        if not recipes:
+            print("No recipes available.")
+        for recipe in recipes:
+            print(f"- {recipe['name']}")
+            print(f"  Instructions:\n    {recipe['instructions'][:100000]}")
