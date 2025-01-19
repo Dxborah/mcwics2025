@@ -1,30 +1,24 @@
 import requests
 import random
 
-def main_illnesses(illness_input):
-    main_ingredients = []
-    if illness_input == 'stroke':
-        main_ingredients = ['beef brisket', 'ham', 'bacon', 'ground pork', 'minced beef', 'beef', 'chorizo', 'lamb kidney', 
-                            'lamb', 'pork', 'kielbasa', 'sausages', 'butter', 'whole milk', 'heavy cream', 'frying oil', 'dash vegetable oil']
-    elif illness_input == 'heart disease':
-        main_ingredients = ['beef brisket', 'ham', 'ground pork', 'bacon', 'minced beef', 'beef', 'chorizo', 'lamb kidney', 
-                            'lamb', 'pork', 'kielbasa', 'sausages', 'butter', 'whole milk', 'heavy cream', 'double cream', 
-                            'frying oil', 'dash vegetable oil']
-    elif illness_input == 'diabetes':
-        main_ingredients = ['sugar', 'golden syrup', 'brown sugar', 'spaghetti', 'penne', 'basmati rice', 'sushi rice', 
-                            'rice', 'white rice', 'flour']
-    elif illness_input == 'acid reflux/ulcers':
-        main_ingredients = ['lemon', 'harissa spice', 'chilli powder', 'red chilli powder', 'madras paste', 'dried chilli powder', 
-                            'vinegar', 'cayenne pepper', 'cajun', 'salsa', 'Allspice', 'scotch bonnet', 'soy sauce', 'dash hotsauce', 
-                            'lemon juice', 'topping hotsauce', 'rice vinegar', 'jalapeno', 'green salsa', 'sliced and seeded jalapeno', 
-                            'cooking wine', 'tomatoes', 'tomato puree', 'finely chopped tomatoes', 'garam masala', 'small cut chunks tomatoes', 
-                            'finely sliced red onions', 'red wine vinegar', 'onion', 'garlic', 'dark soy sauce', 'dry white wine', 
-                            'thai green curry paste', 'lime', 'mustard', 'apple cider vinegar', 'orange', 'balsamic vinegar', 
-                            'tomato ketchup', 'tomato sauce', 'red wine', 'pickle juice']
-    else:
-        raise ValueError("Invalid illness input. Choose from: 'stroke', 'heart disease', 'diabetes', 'acid reflux/ulcers'.")
-
-    return main_ingredients
+def main_illnesses():
+    illnesses = {
+        'Stroke': ['beef brisket', 'ham', 'bacon', 'ground pork', 'minced beef', 'beef', 'chorizo', 'lamb kidney', 
+                   'lamb', 'pork', 'kielbasa', 'sausages', 'butter', 'whole milk', 'heavy cream', 'frying oil', 'dash vegetable oil'],
+        'Heart Disease': ['beef brisket', 'ham', 'ground pork', 'bacon', 'minced beef', 'beef', 'chorizo', 'lamb kidney', 
+                          'lamb', 'pork', 'kielbasa', 'sausages', 'butter', 'whole milk', 'heavy cream', 'double cream', 
+                          'frying oil', 'dash vegetable oil'],
+        'Diabetes': ['sugar', 'golden syrup', 'brown sugar', 'spaghetti', 'penne', 'basmati rice', 'sushi rice', 
+                     'rice', 'white rice', 'flour'],
+        'Acid Reflux/Ulcers': ['lemon', 'harissa spice', 'chilli powder', 'red chilli powder', 'madras paste', 'dried chilli powder', 
+                                'vinegar', 'cayenne pepper', 'cajun', 'salsa', 'Allspice', 'scotch bonnet', 'soy sauce', 'dash hotsauce', 
+                                'lemon juice', 'topping hotsauce', 'rice vinegar', 'jalapeno', 'green salsa', 'sliced and seeded jalapeno', 
+                                'cooking wine', 'tomatoes', 'tomato puree', 'finely chopped tomatoes', 'garam masala', 'small cut chunks tomatoes', 
+                                'finely sliced red onions', 'red wine vinegar', 'onion', 'garlic', 'dark soy sauce', 'dry white wine', 
+                                'thai green curry paste', 'lime', 'mustard', 'apple cider vinegar', 'orange', 'balsamic vinegar', 
+                                'tomato ketchup', 'tomato sauce', 'red wine', 'pickle juice']
+    }
+    return illnesses
 
 def avoid_meals(main_ingredients_avoid):
     filter_url = "https://www.themealdb.com/api/json/v1/1/filter.php?i="
@@ -78,7 +72,6 @@ def get_recipe(meal_id):
             print(f"- Instructions:\n{meal['strInstructions']}")
             print(f"- Ingredients:")
             
-            
             for i in range(1, 21):  
                 ingredient = meal.get(f"strIngredient{i}")
                 measure = meal.get(f"strMeasure{i}")
@@ -111,19 +104,14 @@ def generate_recipes(filtered_meals, meal_count, meal_type):
         get_recipe(meal_id)
 
 if __name__ == "__main__":
-    try:
-        illness_input = input("Enter illness (stroke, heart disease, diabetes, acid reflux/ulcers): ").strip().lower()
-        main_ingredients_to_avoid = main_illnesses(illness_input)
-        meals_to_avoid = avoid_meals(main_ingredients_to_avoid)
+    illnesses = main_illnesses()
+    for illness, ingredients_to_avoid in illnesses.items():
+        print(f"\nIllness: {illness}")
+        print("Avoiding ingredients:", ", ".join(ingredients_to_avoid))
+        meals_to_avoid = avoid_meals(ingredients_to_avoid)
 
         all_meals = get_all_meals()
         allowed_meals = filter_meals(all_meals, meals_to_avoid)
 
-        
         generate_recipes(allowed_meals, 3, "Breakfast")
-
-        
         generate_recipes(allowed_meals, 6, "Lunch/Dinner")
-
-    except ValueError as e:
-        print(e)
