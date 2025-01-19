@@ -1,0 +1,80 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #d9e7d4;
+    margin: 0;
+    padding: 0;
+    background-size: cover;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-image: url('icons/illness-background.png');
+    background-size: cover;
+  }
+  
+  h1 {
+    font-size: 3rem;
+    margin-top: 50px;
+    margin-bottom: 0;
+    text-align: center;
+    font-family: 'Noto Serif Display';
+  }
+  
+  .allergy-container {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    height: 80vh; 
+  }
+  
+  .allergy-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    margin-top: 0;
+    margin-bottom: 20px;
+    border: 4px solid black;
+    border-radius: 50px;
+    padding: 10px 20px;
+    width: 300px;
+    height: 60px;
+    text-decoration: none;
+    font-size: 1.2rem;
+    color: black;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .allergy-button:hover {
+    transform: scale(1.05);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .allergy-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: #6b8f71;
+    color: white;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    margin-right: 10px;
+  }
+  
+  .allergy-text {
+    font-family: 'Delius';
+    flex-grow: 1;
+    text-align: center;
+  }
+  
+  .arrow {
+    font-size: 1.5rem;
+  }
+  
+  /* Individual button styles */
+  
+  
